@@ -57,14 +57,4 @@ inline QDataStream &operator>> (QDataStream &ist, Posters &poster)
     return ist;
 }
 
-inline QTextStream &operator<< (QTextStream &ost, const Posters &poster)
-{
-    ost << QString(poster.namePerformance())
-        << QString("Продюсер спектакля: ") << poster.countSeats()
-        << QString("Дата спектакля: ") << poster.datePerformance().toString("d-MMMM-yyyy")
-        << QString("Время начала спектакля: ") << poster.timePerformance().toString("hh:mm")
-        << QString("\nКоличество зрителей: ") << poster.countFreeSeats() << "\n";
-    return ost;
-}
-
 #endif // POSTERS_H
