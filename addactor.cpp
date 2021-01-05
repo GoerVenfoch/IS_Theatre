@@ -46,7 +46,7 @@ const Actors &addActor::getActor()
     return m_actor;
 }
 
-bool addActor::isActorExists(const Actors& actor)
+bool addActor::isActorExists(const QString firstname, const QString secondname)
 {
     QFile file(Config::fileActor);
     if (file.exists()) {
@@ -58,8 +58,8 @@ bool addActor::isActorExists(const Actors& actor)
         while (!ist.atEnd()) {
             Actors buf_actor;
             ist >> buf_actor;
-            if (buf_actor.firstName() == actor.firstName() &&
-                    buf_actor.secondName() == actor.secondName())
+            if (buf_actor.firstName() == firstname &&
+                    buf_actor.secondName() == secondname)
                 return true;
         }
         return false;
@@ -78,6 +78,10 @@ void addActor::accept()
     if (firstName == "" || secondName == "" || listPerformance.size() == 0)
     {
         mUi->labelError->setText("Ошибка: заполните все поля!");
+    }
+    else if (isActorExists(firstName, secondName))
+    {
+        mUi->labelError->setText("Ошибка: актер уже добавлен!");
     }
     else
     {

@@ -16,6 +16,7 @@ public:
     explicit addActor(Actors &actor, Type type, QWidget *parent = nullptr);
     ~addActor();
     const Actors &getActor();
+    bool isActorExists(const QString firstname, const QString secondname);
 
 private:
     Ui::addActor *mUi;
@@ -26,7 +27,6 @@ private:
 public slots:
     void accept();
 
-    bool isActorExists(const Actors& actor);
 private slots:
     void on_createActor_clicked();
     void on_listPerformance_cellDoubleClicked(int row);
