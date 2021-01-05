@@ -28,10 +28,11 @@ void ManagingTickets::loadTicket()
     m_listTicket.clear();
 
     QFile file(Config::fileTicket);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
-
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Ticket ticket;
             ist >> ticket;
             m_listTicket.append(ticket);
@@ -68,10 +69,11 @@ void ManagingTickets::loadPoster()
     m_listPoster.clear();
 
     QFile file(Config::filePosters);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
-
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Posters poster;
             ist >> poster;
             m_listPoster.append(poster);
@@ -91,13 +93,11 @@ void ManagingTickets::menuCashier(int row)
             post = m_listPoster[i];
             break;
         }
-        else
-        {
-            post.namePerformance() = "Афиши нет";
-        }
+        else post.namePerformance() = "Афиши нет";
     }
+
     Posters &poster = post;
-        MenuCasher dialog(row, poster, ticket, this);
+    MenuCasher dialog(row, poster, ticket, this);
     dialog.setWindowTitle(Config::nameApplication);
     dialog.exec();
 
@@ -111,14 +111,12 @@ void ManagingTickets::menuCashier(int row)
         QDataStream write_ist(&write_file);
 
         int countReads = 0;
-        while (!read_ist.atEnd()) {
+        while (!read_ist.atEnd())
+        {
             Ticket buf_ticket;
             read_ist >> buf_ticket;
 
-            if (countReads++ != row)
-            {
-                write_ist << buf_ticket;
-            }
+            if (countReads++ != row) write_ist << buf_ticket;
         }
         read_file.close();
         read_file.remove();
