@@ -45,7 +45,11 @@ void AddPerformance::accept()
         Author == "" ||
         Produser == "") {
         mUi->labelError->setText("Ошибка: заполните все поля!");
-    } else {
+    } else if (isPerformanceExists(namePerformance))
+    {
+        mUi->labelError->setText("Ошибка: спектакль уже добавлен!");
+    }
+    else {
         m_performance->setData(namePerformance, Author, Produser);
         if (m_type == Create)
         {
@@ -93,4 +97,27 @@ void AddPerformance::loadActers()
 
         }
     }
+}
+
+bool AddPerformance::isPerformanceExists(const QString namePerformance)
+{
+    QFile file(Config::filePerformance);
+    if (file.exists())
+    {
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            mUi->labelError->setText("Ошибка: чтение файла невозможно!");
+            return false;
+        }
+        QDataStream ist(&file);
+
+        while (!ist.atEnd())
+        {
+            Performance buf_performance;
+            ist >> buf_performance;
+            if (buf_performance.NamePerformance() == namePerformance) return true;
+        }
+        return false;
+    }
+    else return false;
 }

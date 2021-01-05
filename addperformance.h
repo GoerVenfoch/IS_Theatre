@@ -16,6 +16,7 @@ public:
     enum Type { Create, Edit};
     explicit AddPerformance(Performance *performance, Type type, QWidget *parent = nullptr);
     ~AddPerformance();
+    bool isPerformanceExists(const QString namePerformance);
 
 private:
     Ui::AddPerformance *mUi;
