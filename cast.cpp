@@ -4,9 +4,9 @@
 #include "addactor.h"
 
 cast::cast(User &user, QWidget *parent) :
-QDialog(parent),
-mUi(new Ui::cast),
-m_user(user)
+    QDialog(parent),
+    mUi(new Ui::cast),
+    m_user(user)
 {
     mUi->setupUi(this);
     setWindowTitle("Актерский состав");
@@ -20,11 +20,13 @@ m_user(user)
     }
 
     QFile file(Config::fileActor);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
 
         int row = 0;
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Actors actor;
             ist >> actor;
             m_actor.append(actor);
@@ -52,10 +54,12 @@ void cast::loadActors()
     m_actor.clear();
 
     QFile file(Config::fileActor);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
 
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Actors actor;
             ist >> actor;
             m_actor.append(actor);
@@ -85,10 +89,9 @@ void cast::on_tableActers_cellActivated(int row)
     aboutActor.setIcon(QMessageBox::Information);
     aboutActor.setStandardButtons(QMessageBox::Ok);
     aboutActor.setText(tr("Фамилия:       %1 <br>"
-                       "Имя:           %2 <br>"
-                       "Дата рождения: %3 <br>")
-            .arg(m_actor[row].firstName()).arg(m_actor[row].secondName())
-                                          .arg(m_actor[row].born().toString("d-MMMM-yyyy")));
+                          "Имя:           %2 <br>"
+                          "Дата рождения: %3 <br>")
+            .arg(m_actor[row].firstName()).arg(m_actor[row].secondName()).arg(m_actor[row].born().toString("d-MMMM-yyyy")));
 }
 
 void cast::on_add_clicked()
@@ -115,7 +118,8 @@ void cast::on_add_clicked()
 void cast::on_edit_clicked()
 {
     int currentRow = mUi->tableActers->currentRow();
-    if (currentRow != -1) {
+    if (currentRow != -1)
+    {
         Actors &actor = m_actor[currentRow];
         addActor dialog(actor, addActor::Edit, this);
         dialog.setWindowTitle(windowTitle());
@@ -125,7 +129,8 @@ void cast::on_edit_clicked()
             m_actor[currentRow] = actor;
 
             QFile read_file(Config::fileActor);
-            if (read_file.open(QIODevice::ReadOnly)) {
+            if (read_file.open(QIODevice::ReadOnly))
+            {
                 QFile write_file("buf_file_actor");
                 write_file.open(QIODevice::WriteOnly);
 
@@ -133,7 +138,8 @@ void cast::on_edit_clicked()
                 QDataStream write_ist(&write_file);
 
                 int count = 0;
-                while (!read_ist.atEnd()) {
+                while (!read_ist.atEnd())
+                {
                     Actors buf_actor;
                     read_ist >> buf_actor;
                     if (count++ == currentRow)
@@ -154,15 +160,14 @@ void cast::on_edit_clicked()
             mUi->tableActers->item(currentRow, 2)->setText(actor.born().toString("d-MMMM-yyyy"));
         }
     }
-    else {
-        QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один актер!");
-    }
+    else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один актер!");
 }
 
 void cast::on_remove_clicked()
 {
     int currentRow = mUi->tableActers->currentRow();
-    if (currentRow != -1) {
+    if (currentRow != -1)
+    {
         m_actor.removeAt(currentRow);
 
         QFile read_file(Config::fileActor);
@@ -175,14 +180,12 @@ void cast::on_remove_clicked()
             QDataStream write_ist(&write_file);
 
             int countReads = 0;
-            while (!read_ist.atEnd()) {
+            while (!read_ist.atEnd())
+            {
                 Actors buf_actor;
                 read_ist >> buf_actor;
 
-                if (countReads++ != currentRow)
-                {
-                    write_ist << buf_actor;
-                }
+                if (countReads++ != currentRow) write_ist << buf_actor;
             }
             read_file.close();
             read_file.remove();
@@ -191,7 +194,5 @@ void cast::on_remove_clicked()
         }
         mUi->tableActers->removeRow(currentRow);
     }
-    else {
-        QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один актер!");
-    }
+    else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один актер!");
 }
