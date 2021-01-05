@@ -11,9 +11,8 @@ MenuCasher::MenuCasher(int row, Posters &poster, const Ticket &ticket, QWidget *
 {
     mUi->setupUi(this);
     mUi->performance->setText(poster.namePerformance());
-    mUi->countViewer->setText(QString::number(m_poster.countSeats()));
+    mUi->countViewer->setText(QString::number(m_poster.countSeats() - m_poster.countFreeSeats()));
     int countFreePlace = m_poster.countFreeSeats();
-
     if (countFreePlace == 0)
     {
         mUi->countFreePlace->setText("Увы, мест нет. Возвращайтесь через 3 000 лет!");
@@ -29,26 +28,34 @@ MenuCasher::~MenuCasher()
 
 void MenuCasher::on_buttonBuyTicket_clicked()
 {
-        int countFreePlace = m_poster.countFreeSeats();
-        countFreePlace--;
+        int countFreePlace = mUi->countFreePlace->text().toInt(), countViewer = mUi->countViewer->text().toInt();
+        countFreePlace--, countViewer++;
         if (countFreePlace == 0)
         {
             mUi->countFreePlace->setText("А мест то нет!");
             mUi->buttonBuyTicket->setEnabled(false);
         }
-        else mUi->countFreePlace->setText(QString::number(countFreePlace));
+        else
+        {
+            mUi->countFreePlace->setText(QString::number(countFreePlace));
+            mUi->countViewer->setText(QString::number(countViewer));
+        }
         mUi->buttonBuyTicket->setEnabled(false);
 }
 
 void MenuCasher::on_buttonHandOverTicket_clicked()
 {
-        int countFreePlace = mUi->countFreePlace->text().toInt();
-        countFreePlace++;
+        int countFreePlace = mUi->countFreePlace->text().toInt(), countViewer = mUi->countViewer->text().toInt();
+        countFreePlace++, countViewer--;
         if (countFreePlace == 0)
         {
             mUi->countFreePlace->setText("НЕТ МЕСТ");
             mUi->buttonBuyTicket->setEnabled(false);
         }
-        else mUi->countFreePlace->setText(QString::number(countFreePlace));
+        else
+        {
+            mUi->countFreePlace->setText(QString::number(countFreePlace));
+            mUi->countViewer->setText(QString::number(countViewer));
+        }
         mUi->buttonHandOverTicket->setEnabled(false);
 }
