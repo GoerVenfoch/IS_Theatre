@@ -31,9 +31,7 @@ addActor::addActor(Actors &actor, Type type, QWidget *parent) :
             row++;
         }
     }
-    else {
-        mUi->mainLabel->setText("ДОБАВЛЕНИЕ АКТЕРА");
-    }
+    else mUi->mainLabel->setText("ДОБАВЛЕНИЕ АКТЕРА");
 }
 
 addActor::~addActor()
@@ -49,23 +47,24 @@ const Actors &addActor::getActor()
 bool addActor::isActorExists(const QString firstname, const QString secondname)
 {
     QFile file(Config::fileActor);
-    if (file.exists()) {
-        if (!file.open(QIODevice::ReadOnly)) {
+    if (file.exists())
+    {
+        if (!file.open(QIODevice::ReadOnly))
+        {
             mUi->labelError->setText("Ошибка: чтение файла невозможно!");
             return false;
         }
         QDataStream ist(&file);
-        while (!ist.atEnd()) {
+
+        while (!ist.atEnd())
+        {
             Actors buf_actor;
             ist >> buf_actor;
-            if (buf_actor.firstName() == firstname &&
-                    buf_actor.secondName() == secondname)
-                return true;
+            if (buf_actor.firstName() == firstname && buf_actor.secondName() == secondname) return true;
         }
         return false;
     }
-    else
-        return false;
+    else return false;
 }
 
 void addActor::accept()
@@ -75,14 +74,8 @@ void addActor::accept()
     QDate born = mUi->born->date();
     QList<QString> listPerformance = m_listActor;
 
-    if (firstName == "" || secondName == "" || listPerformance.size() == 0)
-    {
-        mUi->labelError->setText("Ошибка: заполните все поля!");
-    }
-    else if (isActorExists(firstName, secondName))
-    {
-        mUi->labelError->setText("Ошибка: актер уже добавлен!");
-    }
+    if (firstName == "" || secondName == "" || listPerformance.size() == 0) mUi->labelError->setText("Ошибка: заполните все поля!");
+    else if (isActorExists(firstName, secondName))  mUi->labelError->setText("Ошибка: актер уже добавлен!");
     else
     {
         m_actor.setData(firstName, secondName, born, listPerformance);
