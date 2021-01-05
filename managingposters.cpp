@@ -46,7 +46,7 @@ ManagingPosters::~ManagingPosters()
     delete &m_user;
 }
 
-void ManagingPosters::descriptionPRM(int row, int /*column*/)
+void ManagingPosters::descriptionPRM(int row)
 {   
     for (int i = 0, size_performance = m_listPerformance.size(); i < size_performance; i++)
     {
@@ -73,10 +73,11 @@ void ManagingPosters::loadPosters()
     m_listPosters.clear();
 
     QFile file(Config::filePosters);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
-
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Posters poster;
             ist >> poster;
             m_listPosters.append(poster);
@@ -107,10 +108,11 @@ void ManagingPosters::loadPerformance()
     m_listPerformance.clear();
 
     QFile file(Config::filePerformance);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
-
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Performance performance;
             ist >> performance;
             m_listPerformance.append(performance);
@@ -123,23 +125,14 @@ void ManagingPosters::on_lineFindPosters_textChanged(const QString &text)
     QStringList listStr = text.split(" ");
     listStr.removeAll(QString());
 
-    for (int i = 0; i < m_listPosters.size(); i++) {
-        mUi->tablePerformance->showRow(i);
-    }
+    for (int i = 0; i < m_listPosters.size(); i++) mUi->tablePerformance->showRow(i);
 
     int row = 0;
     foreach (const Posters &poster, m_listPosters)
     {
         int count = 0;
-        foreach (const QString &str, listStr) {
-            if (poster.namePerformance().contains(str))
-            {
-                count++;
-            }
-        }
-        if (count != listStr.size()) {
-            mUi->tablePerformance->hideRow(row);
-        }
+        foreach (const QString &str, listStr) if (poster.namePerformance().contains(str)) count++;
+        if (count != listStr.size()) mUi->tablePerformance->hideRow(row);
         row++;
     }
 }
@@ -189,7 +182,8 @@ void ManagingPosters::on_addPoster_clicked()
 void ManagingPosters::on_removePoster_clicked()
 {
     int currentRow = mUi->tablePerformance->currentRow();
-    if (currentRow != -1) {
+    if (currentRow != -1)
+    {
         m_listPosters.removeAt(currentRow);
 
         QFile read_file(Config::filePosters);
@@ -202,14 +196,11 @@ void ManagingPosters::on_removePoster_clicked()
             QDataStream write_ist(&write_file);
 
             int countReads = 0;
-            while (!read_ist.atEnd()) {
+            while (!read_ist.atEnd())
+            {
                 Posters buf_posters;
                 read_ist >> buf_posters;
-
-                if (countReads++ != currentRow)
-                {
-                    write_ist << buf_posters;
-                }
+                if (countReads++ != currentRow) write_ist << buf_posters;
             }
             read_file.close();
             read_file.remove();
@@ -218,15 +209,14 @@ void ManagingPosters::on_removePoster_clicked()
         }
         mUi->tablePerformance->removeRow(currentRow);
     }
-    else {
-        QMessageBox::warning(this, windowTitle(), "Ошибка: не выбрана ни одна афиша!");
-    }
+    else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбрана ни одна афиша!");
 }
 
 void ManagingPosters::on_editPoster_clicked()
 {
     int currentRow = mUi->tablePerformance->currentRow();
-    if (currentRow != -1) {
+    if (currentRow != -1)
+    {
         Posters poster = m_listPosters[currentRow];
         AddPosters dialog(&poster, m_listPosters, AddPosters::Edit, this);
         dialog.setWindowTitle(windowTitle());
@@ -236,7 +226,8 @@ void ManagingPosters::on_editPoster_clicked()
             m_listPosters[currentRow] = poster;
 
             QFile read_file(Config::filePosters);
-            if (read_file.open(QIODevice::ReadOnly)) {
+            if (read_file.open(QIODevice::ReadOnly))
+            {
                 QFile write_file("buf_file_poster");
                 write_file.open(QIODevice::WriteOnly);
 
@@ -244,15 +235,11 @@ void ManagingPosters::on_editPoster_clicked()
                 QDataStream write_ist(&write_file);
 
                 int countSeats = 0;
-                while (!read_ist.atEnd()) {
+                while (!read_ist.atEnd())
+                {
                     Posters buf_poster;
                     read_ist >> buf_poster;
-
-                    if (countSeats++ == currentRow)
-                    {
-                        buf_poster = poster;
-                    }
-
+                    if (countSeats++ == currentRow) buf_poster = poster;
                     write_ist << buf_poster;
                 }
                 read_file.close();
@@ -270,9 +257,7 @@ void ManagingPosters::on_editPoster_clicked()
             mUi->tablePerformance->item(currentRow, 4)->setText(QString::number(poster.countFreeSeats()));
         }
     }
-    else {
-        QMessageBox::warning(this, windowTitle(), "Ошибка: не выбрана ни одна афиша!");
-    }
+    else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбрана ни одна афиша!");
 }
 
 void ManagingPosters::on_buyTicket_clicked()

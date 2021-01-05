@@ -25,7 +25,7 @@ public:
     const QList<Performance> &listPerformance() const;
 
 private slots:
-    void descriptionPRM(int row, int column);
+    void descriptionPRM(int row);
     void on_addPoster_clicked();
     void on_removePoster_clicked();
     void on_editPoster_clicked();
