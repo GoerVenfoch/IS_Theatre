@@ -172,3 +172,28 @@ void managingPerformance::on_removePerformance_clicked()
         QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один спектакль!");
     }
 }
+void managingPerformance::on_lineFindPerformance_textChanged(const QString &text)
+{
+    QStringList listStr = text.split(" ");
+    listStr.removeAll(QString());
+
+    for (int i = 0; i < m_listPerformance.size(); i++) {
+        mUi->tablePerformance->showRow(i);
+    }
+
+    int row = 0;
+    foreach (const Performance &performance, m_listPerformance)
+    {
+        int count = 0;
+        foreach (const QString &str, listStr) {
+            if (performance.NamePerformance().contains(str))
+            {
+                count++;
+            }
+        }
+        if (count != listStr.size()) {
+            mUi->tablePerformance->hideRow(row);
+        }
+        row++;
+    }
+}

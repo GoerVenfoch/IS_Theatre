@@ -22,6 +22,8 @@ private slots:
     void on_editPerformance_clicked();
     void on_removePerformance_clicked();
 
+    void on_lineFindPerformance_textChanged(const QString &text);
+
 private:
     Ui::managingPerformance *mUi;
     QList<Performance> m_listPerformance;
