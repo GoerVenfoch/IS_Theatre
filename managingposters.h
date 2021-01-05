@@ -30,7 +30,7 @@ private slots:
     void on_removePoster_clicked();
     void on_editPoster_clicked();
 
-//void on_lineFindPosters_textChanged(const QString &text);
+void on_lineFindPosters_textChanged(const QString &text);
 
 void on_buyTicket_clicked();
 

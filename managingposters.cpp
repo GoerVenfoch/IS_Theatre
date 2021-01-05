@@ -118,7 +118,7 @@ void ManagingPosters::loadPerformance()
     }
 }
 
-/*void ManagingPosters::on_lineFindPosters_textChanged(const QString &text)
+void ManagingPosters::on_lineFindPosters_textChanged(const QString &text)
 {
     QStringList listStr = text.split(" ");
     listStr.removeAll(QString());
@@ -142,7 +142,7 @@ void ManagingPosters::loadPerformance()
         }
         row++;
     }
-}*/
+}
 
 const QList<Posters> &ManagingPosters::listPosters() const
 {
