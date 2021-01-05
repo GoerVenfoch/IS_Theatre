@@ -50,13 +50,4 @@ inline QDataStream &operator>> (QDataStream &ist, Performance &performance)
     return ist;
 }
 
-inline QTextStream &operator<< (QTextStream &ost, const Performance &performance)
-{
-    ost << QString(performance.NamePerformance())
-        << QString("Автор спектакля: ") << performance.Author()
-        << QString("Продюсер спектакля: ") << performance.Producer() << "\n";
-
-    return ost;
-}
-
 #endif // PERFORMANCE_H
