@@ -55,7 +55,6 @@ HEADERS += \
     user.h
 
 FORMS += \
-    ActorPerformance.ui \
     AddPoster.ui \
     Add_Performance.ui \
     Add_User.ui \
