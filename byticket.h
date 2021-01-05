@@ -13,12 +13,13 @@ class ByTicket : public QDialog
     Q_OBJECT
 
 public:
-    explicit ByTicket(Ticket &ticket, QWidget *parent = nullptr);
+    explicit ByTicket(Ticket &ticket, QString namePerformance, QWidget *parent = nullptr);
     ~ByTicket();
 
 private:
     Ui::Ticket *mUi;
     Ticket &m_ticket;
+    QString m_namePerformance;
 public slots:
     void accept();
 };

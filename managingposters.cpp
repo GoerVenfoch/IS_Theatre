@@ -263,7 +263,13 @@ void ManagingPosters::on_editPoster_clicked()
 void ManagingPosters::on_buyTicket_clicked()
 {
     Ticket ticket;
-    ByTicket dialog(ticket, this);
-    dialog.setWindowTitle("Покупка билета");
-    dialog.exec();
+    int currentRow = mUi->tablePerformance->currentRow();
+    if (currentRow != -1)
+    {
+        QString namePerformance = mUi->tablePerformance->item(currentRow, 0)->text();
+        ByTicket dialog(ticket, namePerformance, this);
+        dialog.setWindowTitle("Покупка билета");
+        dialog.exec();
+    }
+    else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбрана ни одна афиша!");
 }

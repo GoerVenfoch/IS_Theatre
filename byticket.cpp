@@ -3,13 +3,15 @@
 #include <QFile>
 #include "config.h"
 
-ByTicket::ByTicket(Ticket &ticket, QWidget *parent) :
+ByTicket::ByTicket(Ticket &ticket, QString namePerformance, QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::Ticket),
-    m_ticket(ticket)
+    m_ticket(ticket),
+    m_namePerformance(namePerformance)
 {
     mUi->setupUi(this);
     setWindowTitle("Покупка билета");
+    mUi->performanceLabel->setText(m_namePerformance);
 }
 
 ByTicket::~ByTicket()
@@ -19,7 +21,6 @@ ByTicket::~ByTicket()
 
 void ByTicket::accept()
 {
-    const QString performance = mUi->performanceedit->text();
     const QString firstName = mUi->firstNameedit->text();
     const QString secondName = mUi->secondNameedit->text();
     const QString fatherName = mUi->fatherNameedit->text();
@@ -32,7 +33,7 @@ void ByTicket::accept()
         mUi->labelerror->setText("Ошибка: заполните все поля!");
     }
     else {
-        m_ticket.setData(performance, firstName, secondName, fatherName, phone, Ticket::Combo(combobox), row, place);
+        m_ticket.setData(m_namePerformance, firstName, secondName, fatherName, phone, Ticket::Combo(combobox), row, place);
         QFile file(Config::fileTicket);
         file.open(QIODevice::Append);
         QDataStream ost(&file);
