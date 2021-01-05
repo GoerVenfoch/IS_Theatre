@@ -50,23 +50,4 @@ inline QDataStream &operator>> (QDataStream &ist, Actors &actor)
     return ist;
 }
 
-inline QTextStream &operator<< (QTextStream &ost, const Actors &actor)
-{
-    ost << QString("_____________АКТЕР____________")
-        << QString("Имя: ") << actor.firstName()
-        << QString("Фамилия: ") << actor.secondName()
-        << QString("Дата рождения: ") << actor.born().toString("d-MMMM-yyyy")
-        << QString("Спектакли, в которых играл актер: ");
-
-    int sizePerformance = actor.performances().size();
-    for (int i = 0; i < sizePerformance; i++)
-    {
-        ost << actor.performances().at(i) << endl;
-    }
-
-    ost << QString("_________КОНЕЦ АКТЕРА_________");
-
-    return ost;
-}
-
 #endif // ACTORS_H
