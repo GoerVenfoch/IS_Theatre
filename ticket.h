@@ -68,20 +68,4 @@ inline QDataStream &operator>> (QDataStream &ist, Ticket &ticket)
     return ist;
 }
 
-inline QTextStream &operator<< (QTextStream &ost, const Ticket &ticket)
-{
-    ost << QString("_____________БИЛЕТ____________")
-        << QString("Название спектакля: ") << ticket.performance()
-        << QString("Имя: ") << ticket.firstName()
-        << QString("Фамилия: ") << ticket.secondName()
-        << QString("Отчество: ") << ticket.fatherName()
-        << QString("Телефон: ") << ticket.phone()
-        << QString("Группа зала: ") << Ticket::Combo(ticket.combobox())
-        << QString("Ряд: ") << ticket.row()
-        << QString("Место: ") << ticket.place()
-        << QString("_________КОНЕЦ АКТЕРА_________");
-
-    return ost;
-}
-
 #endif // TICKET_H
