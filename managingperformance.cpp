@@ -21,7 +21,6 @@ managingPerformance::managingPerformance(User &user, QWidget *parent) :
         mUi->editPerformance->hide();
         mUi->removePerformance->hide();
     }
-
     loadPerformance();
 }
 
@@ -35,10 +34,12 @@ void managingPerformance::loadPerformance()
     m_listPerformance.clear();
 
     QFile file(Config::filePerformance);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
 
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Performance performance;
             ist >> performance;
             m_listPerformance.append(performance);
@@ -90,7 +91,8 @@ void managingPerformance::on_addPerformance_clicked()
 void managingPerformance::on_editPerformance_clicked()
 {
     int currentRow = mUi->tablePerformance->currentRow();
-    if (currentRow != -1) {
+    if (currentRow != -1)
+    {
         Performance performance = m_listPerformance[currentRow];
         AddPerformance dialog(&performance, AddPerformance::Edit, this);
         dialog.setWindowTitle(windowTitle());
@@ -100,7 +102,8 @@ void managingPerformance::on_editPerformance_clicked()
             m_listPerformance[currentRow] = performance;
 
             QFile read_file(Config::filePerformance);
-            if (read_file.open(QIODevice::ReadOnly)) {
+            if (read_file.open(QIODevice::ReadOnly))
+            {
                 QFile write_file("buf_file_performance");
                 write_file.open(QIODevice::WriteOnly);
 
@@ -108,15 +111,11 @@ void managingPerformance::on_editPerformance_clicked()
                 QDataStream write_ist(&write_file);
 
                 int countSeats = 0;
-                while (!read_ist.atEnd()) {
+                while (!read_ist.atEnd())
+                {
                     Performance buf_performance;
                     read_ist >> buf_performance;
-
-                    if (countSeats++ == currentRow)
-                    {
-                        buf_performance = performance;
-                    }
-
+                    if (countSeats++ == currentRow) buf_performance = performance;
                     write_ist << buf_performance;
                 }
                 read_file.close();
@@ -131,15 +130,14 @@ void managingPerformance::on_editPerformance_clicked()
             mUi->tablePerformance->item(currentRow, 2)->setText(performance.Producer());            
         }
     }
-    else {
-        QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один спектакль!");
-    }
+    else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один спектакль!");
 }
 
 void managingPerformance::on_removePerformance_clicked()
 {
     int currentRow = mUi->tablePerformance->currentRow();
-    if (currentRow != -1) {
+    if (currentRow != -1)
+    {
         m_listPerformance.removeAt(currentRow);
 
         QFile read_file(Config::filePerformance);
@@ -152,14 +150,11 @@ void managingPerformance::on_removePerformance_clicked()
             QDataStream write_ist(&write_file);
 
             int countReads = 0;
-            while (!read_ist.atEnd()) {
+            while (!read_ist.atEnd())
+            {
                 Performance buf_performance;
                 read_ist >> buf_performance;
-
-                if (countReads++ != currentRow)
-                {
-                    write_ist << buf_performance;
-                }
+                if (countReads++ != currentRow) write_ist << buf_performance;
             }
             read_file.close();
             read_file.remove();
@@ -168,32 +163,21 @@ void managingPerformance::on_removePerformance_clicked()
         }
         mUi->tablePerformance->removeRow(currentRow);
     }
-    else {
-        QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один спектакль!");
-    }
+    else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один спектакль!");
 }
 void managingPerformance::on_lineFindPerformance_textChanged(const QString &text)
 {
     QStringList listStr = text.split(" ");
     listStr.removeAll(QString());
 
-    for (int i = 0; i < m_listPerformance.size(); i++) {
-        mUi->tablePerformance->showRow(i);
-    }
+    for (int i = 0; i < m_listPerformance.size(); i++) mUi->tablePerformance->showRow(i);
 
     int row = 0;
     foreach (const Performance &performance, m_listPerformance)
     {
         int count = 0;
-        foreach (const QString &str, listStr) {
-            if (performance.NamePerformance().contains(str))
-            {
-                count++;
-            }
-        }
-        if (count != listStr.size()) {
-            mUi->tablePerformance->hideRow(row);
-        }
+        foreach (const QString &str, listStr) if (performance.NamePerformance().contains(str)) count++;
+        if (count != listStr.size()) mUi->tablePerformance->hideRow(row);
         row++;
     }
 }
