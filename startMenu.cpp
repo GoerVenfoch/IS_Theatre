@@ -27,10 +27,7 @@ startMenu::startMenu(User &user, QWidget *parent) :
         mUi->managing_posters->hide();
         mUi->managing_user->hide();
     }
-
-    if (m_user.status() == User::Viewer)
-        mUi->managing_tickets->hide();
-
+    if (m_user.status() == User::Viewer) mUi->managing_tickets->hide();
     if (m_user.status() != User::Viewer)
     {
         mUi->cast->hide();
