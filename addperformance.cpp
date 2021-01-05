@@ -41,15 +41,10 @@ void AddPerformance::accept()
     QString Author = mUi->author->text();
     QString Produser = mUi->producer->text();
 
-    if (namePerformance == "" ||
-        Author == "" ||
-        Produser == "") {
-        mUi->labelError->setText("Ошибка: заполните все поля!");
-    } else if (isPerformanceExists(namePerformance))
+    if (namePerformance == "" || Author == "" || Produser == "") mUi->labelError->setText("Ошибка: заполните все поля!");
+    else if (isPerformanceExists(namePerformance))  mUi->labelError->setText("Ошибка: спектакль уже добавлен!");
+    else
     {
-        mUi->labelError->setText("Ошибка: спектакль уже добавлен!");
-    }
-    else {
         m_performance->setData(namePerformance, Author, Produser);
         if (m_type == Create)
         {
@@ -67,10 +62,12 @@ void AddPerformance::loadActers()
     m_listActors.clear();
 
     QFile file(Config::fileActor);
-    if (file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly))
+    {
         QDataStream ist(&file);
 
-        while (!ist.atEnd()) {
+        while (!ist.atEnd())
+        {
             Actors actor;
             ist >> actor;
             m_listActors.append(actor);
