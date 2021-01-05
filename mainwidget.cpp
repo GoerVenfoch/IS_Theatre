@@ -16,18 +16,21 @@ MainWidget::MainWidget(QWidget *parent)
       m_currentWidget(nullptr)
 {
     setWindowTitle(Config::nameApplication);
-    if (!QFile(Config::fileUsers).exists()) {
+    if (!QFile(Config::fileUsers).exists())
+    {
         m_currentWidget = new SignUp(SignUp::Admin, this);
         connect(m_currentWidget, SIGNAL(openAuthorization()),
                 this, SLOT(slotOpenAuthorization()));
     }
-    else {
+    else
+    {
         m_currentWidget = new SignIn(this);
         connect(m_currentWidget, SIGNAL(openRegistration()),
                 this, SLOT(slotOpenRegistration()));
         connect(m_currentWidget, SIGNAL(succesfulEntry(User*)),
                 this, SLOT(slotOpenStartMenu(User*)));
     }
+
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(0);
     layout->addWidget(m_currentWidget);
