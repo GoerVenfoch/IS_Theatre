@@ -20,6 +20,7 @@ private:
     Ui::AddPosters *mUi;
     Posters *m_posters;
     const QList<Posters> &m_listPosters;
+    Type m_type;
 
 public slots:
     void accept();

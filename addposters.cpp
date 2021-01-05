@@ -2,16 +2,18 @@
 #include "config.h"
 #include "posters.h"
 #include "ui_AddPoster.h"
+#include <QFile>
 
 AddPosters::AddPosters(Posters *poster, const QList<Posters> &listPosters, Type type, QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::AddPosters),
     m_posters(poster),
-    m_listPosters(listPosters)
+    m_listPosters(listPosters),
+    m_type(type)
 {
     mUi->setupUi(this);
 
-    if (type == Edit) {
+    if (m_type == Edit) {
         mUi->mainLabel->setText("Редактирование афиши");
         mUi->namePerformance->setText(m_posters->namePerformance());
         mUi->date->setDate(m_posters->datePerformance());
@@ -44,6 +46,36 @@ void AddPosters::accept()
         mUi->labelError->setText("Ошибка: заполните все поля!");
     } else {
         m_posters->setData(namePerformance, date, time, countSeats, countFreeSeats);
+        if (m_type == Create)
+        {
+            QFile file(Config::filePosters);
+            file.open(QIODevice::Append);
+            QDataStream ost(&file);
+            ost << m_posters;
+        }
         QDialog::accept();
     }
 }
+/*
+bool AddPosters::isPosterExists(const QString namePerformance)
+{
+    QFile file(Config::fileActor);
+    if (file.exists())
+    {
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            mUi->labelError->setText("Ошибка: чтение файла невозможно!");
+            return false;
+        }
+        QDataStream ist(&file);
+
+        while (!ist.atEnd())
+        {
+            Actors buf_actor;
+            ist >> buf_actor;
+            if (buf_actor.firstName() == firstname && buf_actor.secondName() == secondname) return true;
+        }
+        return false;
+    }
+    else return false;
+}*/
