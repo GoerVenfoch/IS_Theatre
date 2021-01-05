@@ -44,7 +44,11 @@ void AddPosters::accept()
         time.isNull() ||
         countSeats == 0) {
         mUi->labelError->setText("Ошибка: заполните все поля!");
-    } else {
+    } else if (isPosterExists(namePerformance))
+    {
+        mUi->labelError->setText("Ошибка: афиша уже добавлена!");
+    }
+    else {
         m_posters->setData(namePerformance, date, time, countSeats, countFreeSeats);
         if (m_type == Create)
         {
@@ -56,10 +60,10 @@ void AddPosters::accept()
         QDialog::accept();
     }
 }
-/*
+
 bool AddPosters::isPosterExists(const QString namePerformance)
 {
-    QFile file(Config::fileActor);
+    QFile file(Config::filePosters);
     if (file.exists())
     {
         if (!file.open(QIODevice::ReadOnly))
@@ -71,11 +75,11 @@ bool AddPosters::isPosterExists(const QString namePerformance)
 
         while (!ist.atEnd())
         {
-            Actors buf_actor;
-            ist >> buf_actor;
-            if (buf_actor.firstName() == firstname && buf_actor.secondName() == secondname) return true;
+            Posters buf_poster;
+            ist >> buf_poster;
+            if (buf_poster.namePerformance() == namePerformance) return true;
         }
         return false;
     }
     else return false;
-}*/
+}

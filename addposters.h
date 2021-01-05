@@ -15,6 +15,7 @@ public:
         enum Type { Create, Edit};
         explicit AddPosters(Posters *poster, const QList<Posters> &listPosters, Type type, QWidget *parent = nullptr);
         ~AddPosters();
+        bool isPosterExists(const QString namePerformance);
 
 private:
     Ui::AddPosters *mUi;
