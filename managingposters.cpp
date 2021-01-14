@@ -150,17 +150,12 @@ const QList<Performance> &ManagingPosters::listPerformance() const
 void ManagingPosters::on_addPoster_clicked()
 {
     Posters poster;
-    AddPosters dialog(&poster, m_listPosters, AddPosters::Create, this);
+    AddPosters dialog(poster, m_listPosters, m_listPerformance, AddPosters::Create, this);
     dialog.setWindowTitle(windowTitle());
 
     if (dialog.exec() == QDialog::Accepted)
     {
         m_listPosters.append(poster);
-
-        QFile file(Config::filePosters);
-        file.open(QIODevice::Append);
-        QDataStream ost(&file);
-        ost << poster;
 
         QTableWidgetItem *item_NamePerformance = new QTableWidgetItem(poster.namePerformance());
         QTableWidgetItem *item_date = new QTableWidgetItem(poster.datePerformance().toString("d-MMMM-yyyy"));
@@ -218,7 +213,7 @@ void ManagingPosters::on_editPoster_clicked()
     if (currentRow != -1)
     {
         Posters poster = m_listPosters[currentRow];
-        AddPosters dialog(&poster, m_listPosters, AddPosters::Edit, this);
+        AddPosters dialog(poster, m_listPosters, m_listPerformance, AddPosters::Edit, this);
         dialog.setWindowTitle(windowTitle());
 
         if (dialog.exec() == QDialog::Accepted)

@@ -74,8 +74,8 @@ void addActor::accept()
     QDate born = mUi->born->date();
     QList<QString> listPerformance = m_listActor;
 
-    if (firstName == "" || secondName == "" || listPerformance.size() == 0) mUi->labelError->setText("Ошибка: заполните все поля!");
-    else if (isActorExists(firstName, secondName))  mUi->labelError->setText("Ошибка: актер уже добавлен!");
+    if (firstName == "" || secondName == "") mUi->labelError->setText("Ошибка: заполните все поля!");
+    else if (m_type == Create && isActorExists(firstName, secondName))  mUi->labelError->setText("Ошибка: актер уже добавлен!");
     else
     {
         m_actor.setData(firstName, secondName, born, listPerformance);
@@ -97,10 +97,15 @@ void addActor::on_createActor_clicked()
                                          "Добавление спектакля",
                                          "Введите название спектакля: ",
                                          QLineEdit::Normal);
-    m_listActor.append(str);
-    QTableWidgetItem *item_actor = new QTableWidgetItem(str);
-    mUi->listPerformance->insertRow(m_listActor.size() - 1);
-    mUi->listPerformance->setItem(m_listActor.size() - 1, 0, item_actor);
+
+   if (isPerformanceExists(str))
+   {
+        m_listActor.append(str);
+        QTableWidgetItem *item_actor = new QTableWidgetItem(str);
+        mUi->listPerformance->insertRow(m_listActor.size() - 1);
+        mUi->listPerformance->setItem(m_listActor.size() - 1, 0, item_actor);
+   }
+   else mUi->labelError->setText("Нет такого спектакля!");
 }
 
 void addActor::on_listPerformance_cellDoubleClicked(int row)
@@ -110,8 +115,12 @@ void addActor::on_listPerformance_cellDoubleClicked(int row)
                                          "Введите название спектакля: ",
                                          QLineEdit::Normal,
                                          m_listActor[row]);
-    m_listActor[row] = str;
-    mUi->listPerformance->item(row, 0)->setText(str);
+
+    if (isPerformanceExists(str))
+    {
+        m_listActor[row] = str;
+        mUi->listPerformance->item(row, 0)->setText(str);
+    }
 }
 
 void addActor::on_delActor_clicked()
@@ -122,4 +131,44 @@ void addActor::on_delActor_clicked()
         m_listActor.removeAt(currentRow);
         mUi->listPerformance->removeRow(currentRow);
     }
+}
+
+void addActor::loadPerformance()
+{
+    m_listPerformance.clear();
+
+    QFile file(Config::filePerformance);
+    if (file.open(QIODevice::ReadOnly))
+    {
+        QDataStream ist(&file);
+        while (!ist.atEnd())
+        {
+            Performance performance;
+            ist >> performance;
+            m_listPerformance.append(performance);
+        }
+    }
+}
+
+bool addActor::isPerformanceExists(const QString namePerformance)
+{
+    QFile file(Config::filePerformance);
+    if (file.exists())
+    {
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            mUi->labelError->setText("Ошибка: чтение файла невозможно!");
+            return false;
+        }
+        QDataStream ist(&file);
+
+        while (!ist.atEnd())
+        {
+            Performance buf_performance;
+            ist >> buf_performance;
+            if (buf_performance.NamePerformance() == namePerformance) return true;
+        }
+        return false;
+    }
+    else return false;
 }

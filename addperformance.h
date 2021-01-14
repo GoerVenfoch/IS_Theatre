@@ -14,13 +14,13 @@ class AddPerformance : public QDialog
     Q_OBJECT
 public:
     enum Type { Create, Edit};
-    explicit AddPerformance(Performance *performance, Type type, QWidget *parent = nullptr);
+    explicit AddPerformance(Performance &performance, Type type, QWidget *parent = nullptr);
     ~AddPerformance();
     bool isPerformanceExists(const QString namePerformance);
 
 private:
     Ui::AddPerformance *mUi;
-    Performance *m_performance;
+    Performance &m_performance;
     Type m_type;
     QList<Actors> m_listActors;
 

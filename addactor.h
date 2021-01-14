@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "actors.h"
+#include "performance.h"
 
 namespace Ui {
 class addActor;
@@ -17,12 +18,15 @@ public:
     ~addActor();
     const Actors &getActor();
     bool isActorExists(const QString firstname, const QString secondname);
+    bool isPerformanceExists(const QString namePerformance);
+    void loadPerformance();
 
 private:
     Ui::addActor *mUi;
     Actors &m_actor;
     Type m_type;
     QList<QString> m_listActor;
+    QList<Performance> m_listPerformance;
 
 public slots:
     void accept();

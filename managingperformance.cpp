@@ -1,6 +1,7 @@
 #include "managingperformance.h"
 #include "ui_managingPerformance.h"
 #include "addperformance.h"
+#include "posters.h"
 
 #include <QFile>
 #include <QMessageBox>
@@ -64,17 +65,12 @@ void managingPerformance::loadPerformance()
 void managingPerformance::on_addPerformance_clicked()
 {
     Performance performance;
-    AddPerformance dialog(&performance, AddPerformance::Create, this);
+    AddPerformance dialog(performance, AddPerformance::Create, this);
     dialog.setWindowTitle(windowTitle());
 
     if (dialog.exec() == QDialog::Accepted)
     {
         m_listPerformance.append(performance);
-
-        QFile file(Config::filePerformance);
-        file.open(QIODevice::Append);
-        QDataStream ost(&file);
-        ost << performance;
 
         QTableWidgetItem *item_NamePerformance = new QTableWidgetItem(performance.NamePerformance());
         QTableWidgetItem *item_Author = new QTableWidgetItem(performance.Author());
@@ -94,7 +90,7 @@ void managingPerformance::on_editPerformance_clicked()
     if (currentRow != -1)
     {
         Performance performance = m_listPerformance[currentRow];
-        AddPerformance dialog(&performance, AddPerformance::Edit, this);
+        AddPerformance dialog(performance, AddPerformance::Edit, this);
         dialog.setWindowTitle(windowTitle());
 
         if (dialog.exec() == QDialog::Accepted)
@@ -136,17 +132,20 @@ void managingPerformance::on_editPerformance_clicked()
 void managingPerformance::on_removePerformance_clicked()
 {
     int currentRow = mUi->tablePerformance->currentRow();
+    QString namePerformance = mUi->tablePerformance->item(currentRow, 0)->text();
     if (currentRow != -1)
     {
         m_listPerformance.removeAt(currentRow);
 
-        QFile read_file(Config::filePerformance);
-        if (read_file.open(QIODevice::ReadOnly))
+        QFile read_filePerformance(Config::filePerformance);
+        QFile read_filePosters(Config::filePosters);
+
+        if (read_filePerformance.open(QIODevice::ReadOnly))
         {
             QFile write_file("buf_file_performance");
             write_file.open(QIODevice::WriteOnly);
 
-            QDataStream read_ist(&read_file);
+            QDataStream read_ist(&read_filePerformance);
             QDataStream write_ist(&write_file);
 
             int countReads = 0;
@@ -156,11 +155,32 @@ void managingPerformance::on_removePerformance_clicked()
                 read_ist >> buf_performance;
                 if (countReads++ != currentRow) write_ist << buf_performance;
             }
-            read_file.close();
-            read_file.remove();
+            read_filePerformance.close();
+            read_filePerformance.remove();
             write_file.close();
             write_file.rename(Config::filePerformance);
         }
+
+        if (read_filePosters.open(QIODevice::ReadOnly))
+        {
+            QFile write_file("buf_file_poster");
+            write_file.open(QIODevice::WriteOnly);
+
+            QDataStream read_ist(&read_filePosters);
+            QDataStream write_ist(&write_file);
+
+            while (!read_ist.atEnd())
+            {
+                Posters buf_poster;
+                read_ist >> buf_poster;
+                if (namePerformance != buf_poster.namePerformance()) write_ist << buf_poster;
+            }
+            read_filePosters.close();
+            read_filePosters.remove();
+            write_file.close();
+            write_file.rename(Config::filePosters);
+        }
+
         mUi->tablePerformance->removeRow(currentRow);
     }
     else QMessageBox::warning(this, windowTitle(), "Ошибка: не выбран ни один спектакль!");

@@ -8,7 +8,7 @@
 #include <QModelIndex>
 #include <QFile>
 
-AddPerformance::AddPerformance(Performance *performance, Type type, QWidget *parent) :
+AddPerformance::AddPerformance(Performance &performance, Type type, QWidget *parent) :
     QDialog(parent),
     mUi(new Ui::AddPerformance),
     m_performance(performance),
@@ -19,9 +19,9 @@ AddPerformance::AddPerformance(Performance *performance, Type type, QWidget *par
     if (m_type == Edit) {
         setWindowTitle("Редактирование спектакля");
         mUi->mainLabel->setText("РЕДАКТИРОВАНИЕ СПЕКТАКЛЯ");
-        mUi->namePerformance->setText(m_performance->NamePerformance());
-        mUi->author->setText(m_performance->Author());
-        mUi->producer->setText(m_performance->Producer());
+        mUi->namePerformance->setText(m_performance.NamePerformance());
+        mUi->author->setText(m_performance.Author());
+        mUi->producer->setText(m_performance.Producer());
         loadActers();
     }
     else {
@@ -45,7 +45,7 @@ void AddPerformance::accept()
     else if (isPerformanceExists(namePerformance))  mUi->labelError->setText("Ошибка: спектакль уже добавлен!");
     else
     {
-        m_performance->setData(namePerformance, Author, Produser);
+        m_performance.setData(namePerformance, Author, Produser);
         if (m_type == Create)
         {
             QFile file(Config::filePerformance);
@@ -81,7 +81,7 @@ void AddPerformance::loadActers()
         int size_arr = actor.performances().size();
         for (int i = 0; i < size_arr; i++)
         {
-            if (m_performance->NamePerformance() == actor.performances().at(i))
+            if (m_performance.NamePerformance() == actor.performances().at(i))
             {
                 QTableWidgetItem *item_firstName = new QTableWidgetItem(actor.firstName());
                 QTableWidgetItem *item_secondName = new QTableWidgetItem(actor.secondName());
